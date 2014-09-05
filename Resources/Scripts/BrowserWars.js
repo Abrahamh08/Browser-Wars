@@ -3,14 +3,14 @@ var screenNum = 1;
 
 function preload()
 {
-	game.load.spritesheet('ChromeSkins', '../Images/Browser-Wars/GoogleChrome-Icons.png', 256, 256);
-	game.load.spritesheet('FirefoxSkins', '../Images/Browser-Wars/Firefox-Icons.png', 512, 512);
-	game.load.spritesheet('InternetExplorerSkins', '../Images/Browser-Wars/InternetExplorer-Icons.png', 70, 70);
-	game.load.spritesheet('NexusSkins', '../Images/Browser-Wars/Nexus-Icons.png', 62, 55);
-	game.load.spritesheet('Cursors', '../Images/Browser-Wars/Cursors.png', 50, 50);
-	game.load.spritesheet('Stages', '../Images/Browser-Wars/Stages.png', 800, 600);
-	game.load.audio('Click', ['../Sounds/Click.mp3']);
-	game.load.image('AddButton', '../Images/Browser-Wars/Add-Button.png', 62, 55);
+	game.load.spritesheet('ChromeSkins', '/Images/Browser-Wars/GoogleChrome-Icons.png', 256, 256);
+	game.load.spritesheet('FirefoxSkins', '/Images/Browser-Wars/Firefox-Icons.png', 512, 512);
+	game.load.spritesheet('InternetExplorerSkins', '/Images/Browser-Wars/InternetExplorer-Icons.png', 70, 70);
+	game.load.spritesheet('NexusSkins', '/Images/Browser-Wars/Nexus-Icons.png', 62, 55);
+	game.load.spritesheet('Cursors', '/Images/Browser-Wars/Cursors.png', 50, 50);
+	game.load.spritesheet('Stages', '/Images/Browser-Wars/Stages.png', 800, 600);
+	game.load.audio('Click', ['/Sounds/Click.mp3']);
+	game.load.image('AddButton', '/Images/Browser-Wars/Add-Button.png', 62, 55);
 }
 
 function onClick(e)
@@ -161,6 +161,9 @@ function initPlay()
 		
 		game.physics.arcade.setBoundsToWorld();
 		
+		player.collideWith = [];
+		player.direction = "right";
+		
 		player.damage = function(amount, nameIfDead)
 		{
 			this.health -= amount;
@@ -179,8 +182,6 @@ function initPlay()
 			}
 	
 			this.alpha = this.health;
-			
-			console.log(nameIfDead);
 			
 			return this;
 		};
@@ -201,6 +202,7 @@ function update()
 
 	if(screenNum === 2)
 	{
+		for(var obj in gamePlayers) gamePlayers[obj].collideWith = [];
 		for(var obj in gamePlayers)
 		{
 			var leftKey, rightKey, downKey, upKey;
@@ -228,24 +230,59 @@ function update()
 			if (game.input.keyboard.isDown(leftKey))
 			{
 				player.body.velocity.x -= speed;
+				player.scale.x = -Math.abs(player.scale.x);
+				var offset=new Phaser.Point();
+				offset.x=player.width;
+				player.body.offset=offset;
+				if (player.direction=="right")
+				{
+					player.body.x=player.body.x-player.width;
+					player.direction="left";
+				}
 			}
 		
 			if (game.input.keyboard.isDown(rightKey))
 			{
 				player.body.velocity.x += speed;
+				player.scale.x = Math.abs(player.scale.x);
+				var offset=new Phaser.Point();
+				player.body.offset=offset;
+				if (player.direction=="left")
+				{
+					player.body.x=player.body.x-player.width;
+					player.direction="right";
+				}
 			}
 			
 			if (game.input.keyboard.isDown(upKey) && player.body.touching.down)
 			{
 				player.body.velocity.y = -350;
 			}
-			
-			for(var otherObj in gamePlayers)
+			for (var other in gamePlayers)
 			{
-				var otherPlayer = gamePlayers[otherObj];
-
-				if (game.input.keyboard.isDown(downKey) && game.physics.arcade.collide(player, otherPlayer) || game.physics.collide(otherPlayer, player))
-					otherPlayer.damage(.01, otherObj.replace('Player', ''));
+				var otherPlayer = gamePlayers[other];
+				if (otherPlayer === player) continue;
+				if (game.input.keyboard.isDown(downKey))
+				{
+					var collide = false
+					for(var i in otherPlayer.collideWith)
+					{
+						if (otherPlayer.collideWith[i] === player)
+						{
+							otherPlayer.damage(.01, other.replace('Player', ''));
+							player.collideWith.push(otherPlayer);
+							collide = true;
+						}
+					}
+					if (!collide)
+					{
+						if (game.physics.arcade.collide(player, otherPlayer))
+						{
+							otherPlayer.damage(.01, other.replace('Player', ''));
+							player.collideWith.push(otherPlayer);
+						}
+					}
+				}
 			}
 		}
 	}
