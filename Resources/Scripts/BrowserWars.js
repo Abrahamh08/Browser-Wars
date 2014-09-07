@@ -183,7 +183,7 @@ function initPlay()
 	
 			this.alpha = this.health;
 			
-			console.log(nameIfDead)
+			console.log(nameIfDead);
 			
 			return this;
 		};
