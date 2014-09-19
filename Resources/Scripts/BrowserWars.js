@@ -216,14 +216,14 @@ function update()
 					rightKey = 39;
 					upKey = 38;
 					downKey = 40;
-				break;
+					break;
 				
 				case 'Player0':
 					leftKey = 65;
 					rightKey = 68;
 					upKey = 87;
 					downKey = 83;
-				break;
+					break;
 			}
 			
 			var player = gamePlayers[obj];
