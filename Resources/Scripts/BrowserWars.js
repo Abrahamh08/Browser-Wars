@@ -114,7 +114,7 @@ function create()
 
 function initPlay()
 {
-	gamePlayers = {};
+	gamePlayers = [];
 
 	platforms = game.add.group(); 
 	
@@ -157,7 +157,7 @@ function initPlay()
   		player.body.gravity.y = 500;
 		player.body.collideWorldBounds = true;
 
-		gamePlayers['Player' + i] = player;
+		gamePlayers[i] = player;
 		
 		game.physics.arcade.setBoundsToWorld();
 		
@@ -211,14 +211,14 @@ function update()
 			
 			switch(obj)
 			{
-				case 'Player1':
+				case 1:
 					leftKey = 37;
 					rightKey = 39;
 					upKey = 38;
 					downKey = 40;
 					break;
 				
-				case 'Player0':
+				case 0:
 					leftKey = 65;
 					rightKey = 68;
 					upKey = 87;
