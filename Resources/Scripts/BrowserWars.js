@@ -162,7 +162,7 @@ function initPlay()
 		game.physics.arcade.setBoundsToWorld();
 		
 		player.collideWith = [];
-		player.direction = "right";
+		player.direction = true; //facing right
 		
 		player.damage = function(amount, nameIfDead)
 		{
@@ -236,10 +236,10 @@ function update()
 				var offset=new Phaser.Point();
 				offset.x=player.width;
 				player.body.offset=offset;
-				if (player.direction=="right")
+				if (player.direction) //facing right
 				{
-					player.body.x=player.body.x-player.width;
-					player.direction="left";
+					player.body.x = player.body.x - player.width;
+					player.direction = false; //facing left
 				}
 			}
 		
@@ -247,12 +247,12 @@ function update()
 			{
 				player.body.velocity.x += speed;
 				player.scale.x = Math.abs(player.scale.x);
-				var offset=new Phaser.Point();
+				var offset = new Phaser.Point();
 				player.body.offset=offset;
-				if (player.direction=="left")
+				if (!player.direction) //facing left
 				{
 					player.body.x=player.body.x-player.width;
-					player.direction="right";
+					player.direction = true; //facing right
 				}
 			}
 			
@@ -271,7 +271,7 @@ function update()
 					{
 						if (otherPlayer.collideWith[i] === player)
 						{
-							otherPlayer.damage(.01, other.replace('Player', ''));
+							otherPlayer.damage(.01, other.toString());
 							player.collideWith.push(otherPlayer);
 							collide = true;
 						}
@@ -280,7 +280,7 @@ function update()
 					{
 						if (game.physics.arcade.collide(player, otherPlayer))
 						{
-							otherPlayer.damage(.01, other.replace('Player', ''));
+							otherPlayer.damage(.01, other.toString());
 							player.collideWith.push(otherPlayer);
 						}
 					}
