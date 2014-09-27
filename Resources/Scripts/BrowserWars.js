@@ -157,7 +157,7 @@ function initPlay()
   		player.body.gravity.y = 500;
 		player.body.collideWorldBounds = true;
 
-		gamePlayers[i] = player;
+		gamePlayers.push(player);
 		
 		game.physics.arcade.setBoundsToWorld();
 		
