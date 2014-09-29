@@ -211,14 +211,14 @@ function update()
 			
 			switch(obj)
 			{
-				case 1:
+				case '1':
 					leftKey = 37;
 					rightKey = 39;
 					upKey = 38;
 					downKey = 40;
 					break;
 				
-				case 0:
+				case '0':
 					leftKey = 65;
 					rightKey = 68;
 					upKey = 87;
